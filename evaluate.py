@@ -1,14 +1,19 @@
 # evaluate.py
 
+from sklearn.metrics import classification_report, confusion_matrix
 import pandas as pd
-from sklearn.metrics import r2_score
+import os
 
-def evaluate_model():
-    df = pd.read_csv("data/processed/college_cleaned.csv")
+def evaluate_model(model, X_test, y_test, model_name="model"):
+    preds = model.predict(X_test)
+    report = classification_report(y_test, preds, output_dict=True)
+    cm = confusion_matrix(y_test, preds)
 
-    df = df[['GRAD_RATE', 'NET_PRICE']].dropna()
+    # Saving metrics
+    report_df = pd.DataFrame(report).transpose()
+    save_path = os.path.join('data', 'outputs', f'{model_name}_metrics.csv')
+    report_df.to_csv(save_path)
 
-    corr = df['GRAD_RATE'].corr(df['NET_PRICE'])
-    print(f"Correlation between NET_PRICE and GRAD_RATE: {corr:.2f}")
-
-    
+    print(f"{model_name} metrics saved to {save_path}")
+    print("Confusion Matrix:")
+    print(cm)

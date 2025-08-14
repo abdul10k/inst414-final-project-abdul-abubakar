@@ -1,24 +1,22 @@
 # transform.py
-
 import pandas as pd
 
 def transform_data(df):
-    # Step 1: 
-    columns_to_keep = [
-        "INSTNM",           # Institution Name
-        "STABBR",           # State abbreviation
-        "CONTROL",          # Control of institution (1=Public, 2=Private nonprofit, 3=Private for-profit)
-        "ADM_RATE",         # Admission rate
-        "UGDS",             # Enrollment of undergraduate students
-        "TUITIONFEE_IN",    # In-state tuition
-        "TUITIONFEE_OUT",   # Out-of-state tuition
-        "MD_EARN_WNE_P10"   # Median earnings 10 years after entry
-    ]
+    # Picking out the stuff I care about
+    cols = ['INSTNM', 'ADM_RATE', 'UGDS', 'COSTT4_A', 'MD_EARN_WNE_P10', 
+            'PELL_EVER', 'PCTPELL', 'FAMINC', 'RET_FT4', 'C150_4', 'D150_4']
+    df = df[cols]
 
-    df = df[columns_to_keep]
+    # Renaming so I actually remember what things mean
+    df.columns = ['school_name', 'admission_rate', 'undergrad_count', 'tuition',
+                  'median_earnings', 'pell_ever', 'pell_percent', 'family_income',
+                  'retention_rate', 'grad_rate', 'dropout_rate']
 
-    # Step 2: Clean data
-    df = df.dropna()  # Drop rows with any missing values
-    df = df[df["ADM_RATE"] <= 1]  # Ensure admission rate is between 0 and 1
+    # Nuke any rows with missing values in key columns
+    df = df.dropna()
 
+    # Just double-checking types are good
+    df['pell_ever'] = df['pell_ever'].astype(int)
+
+    print("Data cleaned and transformed.")
     return df

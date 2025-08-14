@@ -3,18 +3,13 @@
 import pandas as pd
 import os
 
-def extract_data(file_path="data/extracted/MERGED2023_24_PP.csv"):
-    """
-    Loads the 2023-24 College Scorecard dataset as a pandas DataFrame.
-
-    Parameters:
-        file_path (str): Path to the CSV file.
-
-    Returns:
-        pd.DataFrame: Raw DataFrame loaded from the CSV.
-    """
-    if not os.path.exists(file_path):
-        raise FileNotFoundError(f"CSV file not found at: {file_path}")
-    
-    df = pd.read_csv(file_path, low_memory=False)
-    return df
+def extract_data():
+    # grabbing the College Scorecard file from my extracted folder
+    path = os.path.join('data', 'extracted', 'MERGED2023_24_PP.csv')
+    try:
+        df = pd.read_csv(path, low_memory=False)
+        print("Data loaded from extracted folder.")
+        return df
+    except FileNotFoundError:
+        print("Couldn't find the file. Make sure it's in the right folder.")
+        return None
