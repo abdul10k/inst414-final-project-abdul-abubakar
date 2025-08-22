@@ -1,0 +1,18 @@
+
+import logging, functools, traceback
+
+def setup_logging():
+    logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s: %(message)s")
+    return logging.getLogger("pipeline")
+
+def fail_gracefully(fn):
+    @functools.wraps(fn)
+    def wrapper(*a, **k):
+        try:
+            return fn(*a, **k)
+        except Exception as e:
+            logging.exception("Pipeline failed")
+            with open("pipeline_error.log","a",encoding="utf-8") as f:
+                f.write("\n=== PIPELINE ERROR ===\n"+str(e)+"\n"+traceback.format_exc()+"\n")
+            raise
+    return wrapper
